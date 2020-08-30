@@ -7,20 +7,20 @@ const io = require("socket.io")(server);
 
 const {
   generateMessage,
-  generateLocationMessage
+  generateLocationMessage,
 } = require("./utils/messages");
 
 const {
   addUser,
   removeUser,
   getUser,
-  getUsersInRoom
+  getUsersInRoom,
 } = require("./utils/users");
-const port = 3000;
+const port = 4000;
 const publicDirectoryPath = path.join(__dirname, "../public");
 app.use(express.static(publicDirectoryPath));
 
-io.on("connection", socket => {
+io.on("connection", (socket) => {
   socket.on("join", ({ username, room }, callback) => {
     const { error, user } = addUser({ id: socket.id, username, room });
 
@@ -34,11 +34,11 @@ io.on("connection", socket => {
       .emit("message", generateMessage(`${user.username} has joined`));
     socket.emit("roomData", {
       room: user.room,
-      users: getUsersInRoom(user.room)
+      users: getUsersInRoom(user.room),
     });
     socket.to(user.room).emit("roomData", {
       room: user.room,
-      users: getUsersInRoom(user.room)
+      users: getUsersInRoom(user.room),
     });
     callback();
   });
@@ -70,7 +70,7 @@ io.on("connection", socket => {
       );
       io.to(user.room).emit("roomData", {
         room: user.room,
-        users: getUsersInRoom(user.room)
+        users: getUsersInRoom(user.room),
       });
     }
   });
